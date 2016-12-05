@@ -1,0 +1,6 @@
+framework >= net45
+source https://www.nuget.org/api/v2
+
+nuget FSharp.Data
+nuget XPlot.GoogleCharts
+nuget MathNet.Numerics
