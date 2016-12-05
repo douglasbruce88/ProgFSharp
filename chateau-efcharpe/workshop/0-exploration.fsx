@@ -245,4 +245,41 @@ redWines
 // If you had to pick one to predict Quality, which
 // one would you select?
 
+let exploratoryChart (projection : Wine -> double * double) = 
+    redWines
+    |> Seq.map (fun wine -> projection wine)
+    |> Chart.Scatter
+    |> Chart.WithOptions options
+    |> Chart.Show
 
+
+exploratoryChart (fun wine -> wine.``Volatile acidity``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Alcohol``, wine.Quality)
+
+#r "../packages/MathNet.Numerics/lib/net40/MathNet.Numerics.dll"
+
+open MathNet.Numerics.Statistics
+
+// Alcohol has the highest correlation with Quality
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Alcohol``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Density``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Fixed acidity``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Volatile acidity``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Citric acid``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Residual sugar``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Chlorides``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Free sulfur dioxide``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Total sulfur dioxide``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``PH``))
+Correlation.Pearson(redWines |> Seq.map (fun wine -> wine.Quality), redWines |> Seq.map (fun wine -> wine.``Sulphates``))
+
+exploratoryChart (fun wine -> wine.Density, wine.Quality)
+exploratoryChart (fun wine -> wine.``Fixed acidity``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Volatile acidity``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Citric acid``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Residual sugar``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Chlorides``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Free sulfur dioxide``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Total sulfur dioxide``, wine.Quality)
+exploratoryChart (fun wine -> wine.``PH``, wine.Quality)
+exploratoryChart (fun wine -> wine.``Sulphates``, wine.Quality)

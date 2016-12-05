@@ -117,12 +117,20 @@ redWines |> Seq.item 1 |> sugarStump 2.0
 
 let learnAlcoholStump alcoholLevel =
     // average quality for wines with alcohol <= level
-    let (low, high) = redWines |> List.ofSeq |> List.partition (fun wine -> wine.Alcohol <= alcoholLevel)
-    let valueIfLow = low |> List.averageBy (fun wine -> wine.Quality)
+    let valueIfLow = 
+        redWines
+        |> Seq.filter (fun wine -> wine.Alcohol <= alcoholLevel)
+        |> Seq.averageBy (fun wine -> wine.Quality)
     // average quality for wines with alcohol > level
-    let valueIfHigh = high  |> List.averageBy (fun wine -> wine.Quality)
+    let valueIfHigh =
+        redWines
+        |> Seq.filter (fun wine -> wine.Alcohol > alcoholLevel)
+        |> Seq.averageBy (fun wine -> wine.Quality)
     // create a stump
-    let predictor (wine:Wine) = if wine.Alcohol <= alcoholLevel then valueIfLow else valueIfHigh
+    let predictor (wine:Wine) =
+        if wine.Alcohol <= alcoholLevel
+        then valueIfLow
+        else valueIfHigh
     // return the stump
     predictor
 
@@ -261,8 +269,10 @@ let levels =
 let bestStump =
     levels
     |> Seq.map (fun level -> learnAlcoholStump level)
-    |> Seq.minBy (fun stump -> averageCost stump)
-
+    |> Seq.minBy (fun stump -> 
+        redWines 
+        |> Seq.averageBy (fun wine -> 
+            pown ((wine.Quality)-(stump wine)) 2))
 
 // how does the cost compare to previous models?        
 let bestCost = 
