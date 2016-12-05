@@ -169,7 +169,7 @@ let boostedLearn
         if depth <= 0
         then currentPredictor
         else 
-            let updatedPredictor = learner currentPredictor
+            let updatedPredictor = learner currentPredictor 
             boost updatedPredictor (depth - 1)
 
     boost basePredictor depth
