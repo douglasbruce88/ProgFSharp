@@ -80,7 +80,8 @@ let residuals0 =
 residuals0
 |> Seq.map (fun (wine,residuals) ->
     // FIX THIS
-    0.0, 0.0
+     
+    wine.Alcohol, residuals
     )
 |> Chart.Scatter
 |> Chart.WithOptions options

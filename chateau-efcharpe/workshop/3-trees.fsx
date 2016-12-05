@@ -160,7 +160,7 @@ let rec treePredict (tree:Tree) (wine:Wine) =
     | Branch((feature,level),lowBranch,highBranch) ->
         if (feature wine < level)
         then treePredict lowBranch wine
-        else failwith "[TODO]"
+        else treePredict highBranch wine
 
 
 treePredict deeperTree (redWines |> Seq.head)
@@ -176,9 +176,9 @@ let treePredictor = treePredict deeperTree
 // As a result, we should be able to use our cost function
 // directly. 
 
-
 // [TODO] compute cost of manualTree, deeperTree
-
+let manualCost = (treePredict manualTree) |> cost sample
+let deeperCost (wine : Sample) = (treePredict deeperTree) |> cost sample
 
 
 (*
@@ -321,7 +321,9 @@ let cost_depth_2 =
     learn { defaultConfig with MaxDepth = 2 } features sample
     |> cost sample
 
-let cost_depth_6 = failwith "[TODO]"
+let cost_depth_6 =
+    learn { defaultConfig with MaxDepth = 6 } features sample
+    |> cost sample
 
 
 
@@ -335,7 +337,7 @@ let depth_6_quality =
     sample
     |> Seq.map (fun (wine,quality) ->
         // [TODO] return actual and predicted quality
-        failwith "[TODO]")
+        (quality, predictor_depth_6 wine))
     |> Chart.Scatter
     |> Chart.WithOptions options
     |> Chart.Show
@@ -357,8 +359,7 @@ let validationConfig = {
 [ 1 .. 10 ]
 |> List.map (fun depth ->
     let config = { validationConfig with MaxDepth = depth }
-    // [TODO] learn the tree and compute its cost
-    failwith "[TODO]"
+    learn config features sample |> cost sample
     )
 |> Chart.Line
 |> Chart.Show
@@ -401,9 +402,9 @@ let testingSample = sample |> Seq.skip (sampleSize/2)
     let config = { validationConfig with MaxDepth = depth }
     let predictor = learn config features trainingSample  
     // [TODO] cost on the trainingSample
-    let trainingCost = failwith "[TODO]"
+    let trainingCost = cost trainingSample predictor
     // [TODO] cost on the testingSample
-    let testingCost = failwith "[TODO]"
+    let testingCost = cost testingSample predictor 
     (depth,trainingCost),(depth,testingCost))
 |> List.unzip
 |> fun (train,test) -> [ train; test ]
@@ -412,3 +413,5 @@ let testingSample = sample |> Seq.skip (sampleSize/2)
 |> Chart.Show
 
 // What do you observe? How do you interpret it?
+// Testing accuracy increases from 1 -> 4 nodes, then begins to decrease again 
+// This suggests we are overfitting our model with >4 points
