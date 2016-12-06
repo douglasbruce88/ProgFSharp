@@ -178,12 +178,12 @@ let boostedLearn
 // TODO learn 5 boosted trees of depth 2, and compute the 
 // cost of the resulting predictor.
 let config = {
-    GridSize = 10
-    MaxDepth = 2
-    MinLeafSize = 20
+    GridSize = 20
+    MaxDepth = 1
+    MinLeafSize = 10
 }
 
-let boostedTrees = failwith "TODO FIX THIS"
+let boostedTrees = boostedLearn config singleFeature sample 5
 
 let boostedCost = cost sample boostedTrees
 
@@ -204,7 +204,7 @@ fast. Let's see how the boosted trees behave!
 // 1 and 5.  
 [ 1 .. 5 ] 
 |> List.map (fun depth -> 
-    let predictor = failwith "TODO"
+    let predictor = boostedLearn config singleFeature sample depth
     depth, cost sample predictor
 )
 
@@ -217,13 +217,13 @@ let testingSample = sample |> Seq.skip (sampleSize/2)
 // TODO Now for depth between 1 and 5, let's learn a 
 // boosted tree, and compute the cost on both the learning and
 // testing samples - and plot it!
-[ 1 .. 5 ]
+[ 1 .. 10 ]
 |> List.map (fun depth ->
     let predictor = boostedLearn config features trainingSample depth  
     // [TODO] cost on the trainingSample
-    let trainingCost = failwith "TODO"
+    let trainingCost = cost trainingSample predictor
     // [TODO] cost on the testingSample
-    let testingCost = failwith "TODO"
+    let testingCost = cost testingSample predictor
     (depth,trainingCost),(depth,testingCost))
 |> List.unzip
 |> fun (train,test) -> [ train; test ]
@@ -276,3 +276,7 @@ If you are interested in seeing a more complete approach,
 you can find an example on my blog here (3 parts):
 http://brandewinder.com/2016/08/06/gradient-boosting-part-1/
 *)
+
+
+// You want to get the most possible information in the first question
+// e.g. 'Is it alive?', 'Does it have legs?' etc rather than 'Is it a fish?'
